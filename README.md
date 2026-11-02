@@ -4,7 +4,11 @@
 plugin behavior as the template repo, but packages it with a visible launcher activity so the
 plugin can be exercised directly on the watch.
 
-## What it includes
+## Purpose and Capabilities
+
+<a id="what-it-includes"></a>
+
+### What it includes
 
 - hosted settings support
 - CEP rule add/remove behavior
@@ -18,7 +22,48 @@ plugin can be exercised directly on the watch.
 
 This repo is intended for testing the plugin behavior in an app shell with on-device controls.
 
-## Build and test
+## Status
+
+This repo is intended for testing plugin behavior in an app shell with on-device controls.
+Release readiness, deployment history, and a supported WearTAK version matrix are
+undocumented. Build and publishing workflows below describe automation, not release
+certification.
+
+## Point of Contacts
+
+Maintainer and support contacts are undocumented in this repository.
+
+## Ports Required
+
+No plugin-owned TCP or UDP listener or Internet permission is declared in the current
+source and manifest. Host communication uses Android Binder through the exported plugin
+service, protected by the signature-level `com.weartak.plugin.permission.BIND_PLUGIN`
+permission. WearTAK host network requirements are undocumented here.
+
+Build and publishing automation needs outbound HTTPS access to configured dependency
+repositories, Gradle distribution services, TAK infrastructure, and GitHub; these are
+development/CI requirements, not plugin runtime listener ports.
+
+## Equipment Required
+
+- A Wear OS watch declaring `android.hardware.type.watch`, running Android API 30 or later.
+- A compatible WearTAK host for exercising host-dependent actions. Host binding requires
+  signing compatible with the manifest's signature-level permission; a launcher alone
+  does not establish a host connection.
+- For development, an Android SDK with platform 34 and JDK 17; the repository includes
+  the Gradle wrapper.
+
+## Equipment Supported
+
+The manifest requires watch hardware; the app targets API 34 with minimum API 30.
+Tested watch models, emulator configurations, and firmware versions are undocumented.
+These manifest constraints are not a device certification list.
+
+## Compilation
+
+<a id="build-and-test"></a>
+
+### Build and test
 
 ```bash
 ./gradlew :app:assembleDebug
@@ -27,7 +72,24 @@ This repo is intended for testing the plugin behavior in an app shell with on-de
 
 The project expects a local Android SDK and JDK 17.
 
-## Project layout
+On Windows, use `.\gradlew.bat :app:assembleDebug` and
+`.\gradlew.bat :app:testDebugUnitTest`.
+
+## Developer Notes
+
+### README standard for derived plugins
+
+When using this repository as a scaffold, retain these H2 categories in this order:
+Purpose and Capabilities; Status; Point of Contacts; Ports Required; Equipment Required;
+Equipment Supported; Compilation; Developer Notes; License. Replace template descriptions
+with verified project facts, keep project-specific build/testing/publishing and security
+details as subsections, and preserve links and anchors. Mark unknown facts as undocumented;
+use N/A only when genuinely inapplicable. Verify licensing separately for project code
+and bundled dependencies before publishing.
+
+<a id="project-layout"></a>
+
+### Project layout
 
 This repository uses the conventional Android application structure:
 
@@ -37,7 +99,9 @@ This repository uses the conventional Android application structure:
 - `app/src/` — plugin source, manifest, resources, assets, and tests
 - `app/libs/` — bundled WearTAK SDK AAR artifacts
 
-## Forge release pipeline
+<a id="forge-release-pipeline"></a>
+
+### Forge release pipeline
 
 `.gitlab-ci.yml` runs publisher/checklist tests and unsigned debug tests for merge requests,
 the default branch, and version tags. Protected default-branch pushes also build a
@@ -83,7 +147,9 @@ assets. For naming migrations, upload the new filename alongside the old asset, 
 SHA256, then update download links and checksum filename references. Renaming an existing
 GitHub asset changes its download URL; it does not preserve old filename links.
 
-## Notes
+<a id="notes"></a>
+
+### Notes
 
 - Debug builds use the standard Android debug keystore when no custom signing values are supplied.
 - GitLab or local custom signing can be supplied with the `WEARTAK_DEBUG_*` and `WEARTAK_RELEASE_*`
@@ -92,4 +158,15 @@ GitHub asset changes its download URL; it does not preserve old filename links.
 - The WearTAK SDK is consumed from the repo-local `app/libs/` directory.
 - Keystore directories are intentionally not included in this template. Shared signing backups
   are retained centrally under `WT-Plugin-Docs/signing-backups/`.
-- More detailed behavior notes live in [`docs/Docs.md`](docs/Docs.md).
+- The previously referenced `docs/Docs.md` is absent from this checkout. Current behavior
+  can be inspected in
+  [`TemplatePluginRuntime.kt`](app/src/main/java/com/weartak/plugin/template/service/TemplatePluginRuntime.kt)
+  and
+  [`TemplatePluginBinderTest.kt`](app/src/test/java/com/weartak/plugin/template/service/TemplatePluginBinderTest.kt).
+
+## License
+
+Licensing is undocumented in this checkout: no tracked license file or source license
+notice was found. The bundled WearTAK SDK AARs and other dependencies require separate
+license verification; their terms are not established by this README. No license grant
+or relicensing is implied. Confirm applicable permissions before redistribution.
