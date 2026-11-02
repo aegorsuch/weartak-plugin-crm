@@ -84,8 +84,10 @@ Purpose and Capabilities; Status; Point of Contacts; Ports Required; Equipment R
 Equipment Supported; Compilation; Developer Notes; License. Replace template descriptions
 with verified project facts, keep project-specific build/testing/publishing and security
 details as subsections, and preserve links and anchors. Mark unknown facts as undocumented;
-use N/A only when genuinely inapplicable. Verify licensing separately for project code
-and bundled dependencies before publishing.
+use N/A only when genuinely inapplicable. Derived plugins should declare
+`GPL-3.0-or-later` for original project code by default and include the complete GPLv3
+text in `LICENSE`. Preserve existing notices and third-party terms; verify ownership
+and dependency licensing before publishing rather than relicensing third-party code.
 
 <a id="project-layout"></a>
 
@@ -166,7 +168,16 @@ GitHub asset changes its download URL; it does not preserve old filename links.
 
 ## License
 
-Licensing is undocumented in this checkout: no tracked license file or source license
-notice was found. The bundled WearTAK SDK AARs and other dependencies require separate
-license verification; their terms are not established by this README. No license grant
-or relicensing is implied. Confirm applicable permissions before redistribution.
+Original project code is licensed under the GNU General Public License, version 3
+or (at your option) any later version (`GPL-3.0-or-later`). See [LICENSE](LICENSE)
+for the complete GPLv3 text.
+
+This declaration covers the repository owner's original code only, not third-party
+code or bundled artifacts. Existing notices and third-party licensing obligations
+remain in effect. In particular, `gradlew` and `gradlew.bat` retain their Apache-2.0
+copyright and license notices; Gradle wrapper components are not relicensed here.
+The bundled WearTAK SDK AARs in `app/libs/` contain no license notice identified during
+inspection, so their licensing and redistribution permissions remain unverified.
+Other dependencies retain their respective licenses. Verify those terms and preserve
+required notices before redistributing source or APKs; this GPL declaration does not
+grant rights to third-party components.
