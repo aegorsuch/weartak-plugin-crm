@@ -76,28 +76,30 @@ class CrmReserveActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
 
         setContent {
-            BackHandler {
-                finish()
+            CrmWearTheme {
+                BackHandler {
+                    finish()
+                }
+
+                val uiState by crmViewModel.uiState.collectAsStateWithLifecycle()
+                val samplingState by crmViewModel.samplingState.collectAsStateWithLifecycle()
+                val waveformSamples by crmViewModel.waveformSamples.collectAsStateWithLifecycle()
+
+                CrmReserveScreen(
+                    uiState = uiState,
+                    samplingState = samplingState,
+                    waveformSamples = waveformSamples,
+                    onSamplingClick = {
+                        when (samplingState) {
+                            CrmSamplingState.STARTING,
+                            CrmSamplingState.SAMPLING -> CrmInferenceService.stop(this)
+                            CrmSamplingState.STOPPING -> Unit
+                            else -> CrmInferenceService.start(this)
+                        }
+                    },
+                    onBackClick = { finish() },
+                )
             }
-
-            val uiState by crmViewModel.uiState.collectAsStateWithLifecycle()
-            val samplingState by crmViewModel.samplingState.collectAsStateWithLifecycle()
-            val waveformSamples by crmViewModel.waveformSamples.collectAsStateWithLifecycle()
-
-            CrmReserveScreen(
-                uiState = uiState,
-                samplingState = samplingState,
-                waveformSamples = waveformSamples,
-                onSamplingClick = {
-                    when (samplingState) {
-                        CrmSamplingState.STARTING,
-                        CrmSamplingState.SAMPLING -> CrmInferenceService.stop(this)
-                        CrmSamplingState.STOPPING -> Unit
-                        else -> CrmInferenceService.start(this)
-                    }
-                },
-                onBackClick = { finish() },
-            )
         }
     }
 }
