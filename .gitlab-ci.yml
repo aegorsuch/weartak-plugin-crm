@@ -39,7 +39,7 @@ release_publisher_tests:
     - python -m unittest discover -s ci/tests -v
   rules:
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
-    - if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH && $CI_PIPELINE_SOURCE == "push"'
+    - if: '$CI_PIPELINE_SOURCE == "push" && $CI_COMMIT_BRANCH'
     - if: '$CI_COMMIT_TAG'
 
 release_checklist_tests:
@@ -52,7 +52,7 @@ release_checklist_tests:
     - node --test ci/release-testing/create_release_test_issue.test.cjs
   rules:
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
-    - if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH && $CI_PIPELINE_SOURCE == "push"'
+    - if: '$CI_PIPELINE_SOURCE == "push" && $CI_COMMIT_BRANCH'
     - if: '$CI_COMMIT_TAG'
 
 # Unit tests and debug build never use production signing credentials.
@@ -82,7 +82,7 @@ unit_tests:
       junit: app/build/test-results/testDebugUnitTest/*.xml
   rules:
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
-    - if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH && $CI_PIPELINE_SOURCE == "push"'
+    - if: '$CI_PIPELINE_SOURCE == "push" && $CI_COMMIT_BRANCH'
     - if: '$CI_COMMIT_TAG'
 
 .release_build:
