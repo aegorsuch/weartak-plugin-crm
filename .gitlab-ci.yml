@@ -10,13 +10,10 @@ variables:
   GRADLE_BUILD_LAUNCHER_TAG: "2.6.2"
   KUBERNETES_MEMORY_LIMIT: "8Gi"
   GRADLE_USER_HOME: "$CI_PROJECT_DIR/.gradle"
-  GITHUB_RELEASE_APPLICATION_ID: "com.weartak.plugin.crm"
-  GITHUB_RELEASE_ASSET_PREFIX: "CRM"
 
 stages:
   - test
   - build
-  - publish
 
 .gradle_image:
   image:
@@ -28,19 +25,6 @@ stages:
   before_script:
     - !reference [.artifactory_service_create_token_no_depends_bash, before_script]
     - export ARTIFACTORY_USER="$GITLAB_USER_EMAIL" ARTIFACTORY_PASSWORD="$CI_JOB_ARTIFACTORY_TOKEN"
-
-release_publisher_tests:
-  stage: test
-  image:
-    name: python:3.12-slim
-    entrypoint: [""]
-  extends: .artifactory_service_create_token_bash
-  script:
-    - python -m unittest discover -s ci/tests -v
-  rules:
-    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
-    - if: '$CI_PIPELINE_SOURCE == "push" && $CI_COMMIT_BRANCH'
-    - if: '$CI_COMMIT_TAG'
 
 release_checklist_tests:
   stage: test
@@ -63,6 +47,8 @@ unit_tests:
   script:
     - |
       set -eu
+      sh ci/test_wear_version.sh
+      sh ci/prepare_wear_version.sh
       GRADLE_ROOT="$(sh ci/prepare_gradle.sh)"
       trap 'rm -rf "$GRADLE_ROOT"' EXIT
       export GRADLE_USER_HOME="$GRADLE_ROOT/gradle-home"
@@ -110,6 +96,10 @@ unit_tests:
   script:
     - |
       set -eu
+      (
+        unset WEARTAK_RELEASE_KEYSTORE_B64 RELEASE_STORE_PASSWORD RELEASE_KEY_ALIAS RELEASE_KEY_PASSWORD
+        sh ci/prepare_wear_version.sh
+      )
       GRADLE_ROOT="$(sh ci/prepare_gradle.sh)"
       trap 'rm -rf "$GRADLE_ROOT"' EXIT
       export GRADLE_USER_HOME="$GRADLE_ROOT/gradle-home"
@@ -135,7 +125,7 @@ unit_tests:
       echo "Actual signer:   $ACTUAL"
       [ "$ACTUAL" = "$EXPECTED" ] || { echo "ERROR: Unexpected signing certificate"; exit 1; }
       echo "Release signing verified."
-      sha256sum "$APK" > app/build/outputs/apk/release/verified-apk.sha256
+      sh ci/name_release_apk.sh
   after_script:
     - rm -f app/weartak.keystore signing.properties
 
@@ -160,18 +150,3 @@ official_release:
       - app/build/outputs/apk/release/*.apk
   rules:
     - if: '$CI_COMMIT_TAG =~ /^v[0-9]+\.[0-9]+\.[0-9]+(\.[0-9]+)?$/'
-
-publish_github_default:
-  stage: publish
-  image:
-    name: python:3.12-slim
-    entrypoint: [""]
-  extends: .artifactory_service_create_token_bash
-  dependencies:
-    - default_branch_release
-  resource_group: weartak-plugin-github-release
-  interruptible: false
-  script:
-    - python ci/publish_github_release.py
-  rules:
-    - if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH && $CI_COMMIT_REF_PROTECTED == "true" && $CI_PIPELINE_SOURCE == "push"'
