@@ -134,7 +134,7 @@ apply(from = rootProject.file("gradle/weartak-sideload-production.gradle"))
 
 dependencies {
     implementation(files(sdkFile))
-    implementation(files(hostServicesSdkFile))
+    compileOnly(files(hostServicesSdkFile))
     implementation(platform("androidx.compose:compose-bom:2024.09.03"))
     implementation("androidx.activity:activity-compose:1.9.3")
     implementation("androidx.appcompat:appcompat:1.7.0")
