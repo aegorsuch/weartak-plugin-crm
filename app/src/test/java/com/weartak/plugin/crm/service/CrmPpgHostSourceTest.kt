@@ -82,7 +82,7 @@ class CrmPpgHostSourceTest {
             PpgContractV1.OK,
             source.subscribe(recordingListener(
                 stateListener = { stateCount.countDown() },
-                failureListener = { failureCount += 1 },
+                onFailureListener = { failureCount += 1 },
             )),
         )
 
