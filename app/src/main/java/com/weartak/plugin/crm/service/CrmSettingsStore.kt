@@ -67,15 +67,10 @@ class CrmSettingsStore(context: Context) {
             )
         }
 
-        val validationInput = if (migrationRequested) {
-            Bundle(incoming).apply { remove(FIELD_MIGRATION_COMPLETE) }
-        } else {
-            incoming
-        }
         val validated = SettingsApplyValidator.applySettingsWithResult(
             schema = schema,
             previous = previousValues,
-            incoming = validationInput,
+            incoming = incoming,
             hostSettings = hostSettings,
             applyMode = applyMode,
         )
@@ -208,13 +203,12 @@ class CrmSettingsStore(context: Context) {
                     fieldType = SettingsFieldTypes.TOGGLE,
                     required = true,
                     defaultValueLiteral = "false",
-                    readOnly = true,
                 ),
             ),
         ).let { raw ->
             when (val result = SettingsSchemaContractValidator.validate(raw)) {
                 is ContractValidationResult.Ok -> result.value
-                is ContractValidationResult.Err -> SettingsSchemaContractValidator.sanitize(raw)
+                is ContractValidationResult.Err -> error("Invalid CRM settings schema: ${result.issues}")
             }
         }
     }

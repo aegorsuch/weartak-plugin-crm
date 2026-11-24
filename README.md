@@ -94,7 +94,8 @@ Threshold fields are sent as SDK `NUMBER` / Bundle `Double` values and stored on
 range validation. `crm_legacy_migration_complete` is persisted and returned in settings values.
 Legacy migration applies all three values and the marker atomically; any explicit setting edit
 also marks migration complete. A repeated or incomplete migration is rejected without modifying
-stored values.
+stored values. The SDK schema permits the host migration patch; the plugin rejects standalone
+marker edits and never allows the marker to revert to false.
 
 ### SDK and release pipeline
 
