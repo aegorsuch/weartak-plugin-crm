@@ -63,7 +63,8 @@ debug build. No local build has been used for this extraction.
 
 ### Host integration contract
 
-The plugin negotiates `com.weartak.plugin.sdk.ppg.v1` using `PluginInitParcel.hostExtras`:
+The plugin advertises SDK API v2 and negotiates `com.weartak.plugin.sdk.ppg.v1` using
+`PluginInitParcel.hostExtras` passed to `initializePluginV2`:
 
 - `com.weartak.plugin.ppg.version`: integer version `1`.
 - `com.weartak.plugin.ppg.v1`: `IPpgHostV1` Binder.

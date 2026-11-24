@@ -3,7 +3,6 @@ package com.weartak.plugin.crm.service
 import android.os.Bundle
 import android.util.Log
 import com.weartak.plugin.crm.BuildConfig
-import com.weartak.plugin.sdk.WearTakPluginContract
 import com.weartak.plugin.sdk.aidl.IWearTakHostCallback
 import com.weartak.plugin.sdk.aidl.IWearTakPlugin
 import com.weartak.plugin.sdk.aidl.IWearTakPluginControl
@@ -25,6 +24,7 @@ import com.weartak.plugin.sdk.model.SettingsApplyResultParcel
 import com.weartak.plugin.sdk.model.SettingsSchemaParcel
 import com.weartak.plugin.sdk.validation.ContractValidationResult
 import com.weartak.plugin.sdk.validation.PluginMetadataValidator
+import com.weartak.plugin.sdk.v2.WearTakPluginV2Contract
 import com.weartak.plugin.sdk.v2.aidl.IWearTakPluginHostControlV2
 import com.weartak.plugin.sdk.v3.aidl.IWearTakPluginHostControlV3
 
@@ -44,7 +44,7 @@ class CrmPluginBinder(
         return CrmPluginRuntime.getCapabilities()
     }
 
-    override fun getApiVersion(): Int = WearTakPluginContract.CONTRACT_API_VERSION
+    override fun getApiVersion(): Int = WearTakPluginV2Contract.CONTRACT_API_VERSION
 
     override fun getStatus(): PluginStatusParcel = guard.query(
         operation = "getStatus",
