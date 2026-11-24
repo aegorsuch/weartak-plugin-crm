@@ -11,6 +11,7 @@ import com.weartak.plugin.crm.data.CrmInferenceState
 import com.weartak.plugin.crm.data.CrmInferenceStatus
 import com.weartak.plugin.crm.data.CrmPluginSettings
 import com.weartak.plugin.crm.presentation.CrmReserveActivity
+import com.weartak.plugin.sdk.MainUiActionContract
 import com.weartak.plugin.sdk.aidl.IWearTakHostCallback
 import com.weartak.plugin.sdk.binder.PluginHostNotifier
 import com.weartak.plugin.sdk.model.HostSettingsParcel
@@ -82,6 +83,12 @@ object CrmPluginRuntime {
                     cardId = "crm-values",
                     title = "Measurement",
                     subtitle = "Current state",
+                ),
+                MainUiCardParcel(
+                    cardType = MainUiCardTypes.ACTION,
+                    cardId = "crm-open",
+                    title = "Open CRM",
+                    content = MainUiActionContract.createContent(ACTION_OPEN_CRM, "Open CRM"),
                 ),
             ),
         )

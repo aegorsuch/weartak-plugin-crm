@@ -10,7 +10,8 @@ WearTAK host stream.
 - Processes 500-sample, 100 Hz windows with Core's 5-second window, 1-second inference cadence,
   preprocessing, quality checks, and bundled TFLite model.
 - Uses the Core defaults: disabled, poor maximum 33, moderate maximum 66.
-- Provides hosted settings for enablement and threshold configuration.
+- Provides hosted status/measurement cards with an explicit Open CRM action, plus hosted settings
+  for enablement and threshold configuration.
 - Emits host status events using sensor key `crm_status_v1`; it does not dispatch alerts or CoT.
 - Logs measurement sessions to the app-specific Documents directory.
 
