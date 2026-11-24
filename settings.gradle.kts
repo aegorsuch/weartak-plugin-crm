@@ -55,5 +55,5 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "weartak-plugin-app-teamplate"
+rootProject.name = "weartak-plugin-crm"
 include(":app")

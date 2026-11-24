@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="crm_warning_title">CRM-Status</string>
+    <string name="crm_warning_status_format">CRM %2$s: %1$d</string>
+    <string name="crm_warning_summary">%1$d / 100\n%2$s</string>
+    <string name="crm_warning_poor">NIEDRIG</string>
+    <string name="crm_warning_moderate">MITTEL</string>
+    <string name="crm_warning_details">CRM-Details</string>
+    <string name="notification_crm">CRM-Inferenz</string>
+    <string name="crm_reserve">CRM-Reserve</string>
+</resources>

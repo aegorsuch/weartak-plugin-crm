@@ -10,6 +10,8 @@ variables:
   GRADLE_BUILD_LAUNCHER_TAG: "2.6.2"
   KUBERNETES_MEMORY_LIMIT: "8Gi"
   GRADLE_USER_HOME: "$CI_PROJECT_DIR/.gradle"
+  GITHUB_RELEASE_APPLICATION_ID: "com.weartak.plugin.crm"
+  GITHUB_RELEASE_ASSET_PREFIX: "CRM"
 
 stages:
   - test
@@ -59,8 +61,20 @@ unit_tests:
   stage: test
   interruptible: true
   script:
-    - chmod +x gradlew
-    - ./gradlew --no-daemon :app:testDebugUnitTest :app:assembleDebug
+    - |
+      set -eu
+      GRADLE_ROOT="$(sh ci/prepare_gradle.sh)"
+      trap 'rm -rf "$GRADLE_ROOT"' EXIT
+      export GRADLE_USER_HOME="$GRADLE_ROOT/gradle-home"
+      SDK_AAR="$(sh ci/prepare_pinned_plugin_sdk.sh)"
+      HOST_SDK_AAR="$(dirname "$SDK_AAR")/verified-weartak-plugin-host-services-sdk-release.aar"
+      unset CI_JOB_TOKEN
+      trap 'rm -f "$SDK_AAR" "$HOST_SDK_AAR"; rm -rf "$GRADLE_ROOT"' EXIT
+      "$GRADLE_USER_HOME/wrapper/dists/gradle-8.14.5-bin/690y85m0j9nfaub7xoiayko8a/gradle-8.14.5/bin/gradle" \
+        --no-daemon --max-workers=2 -Pkotlin.compiler.execution.strategy=in-process \
+        "-PweartakPluginSdkAar=$SDK_AAR" \
+        "-PweartakHostServicesSdkAar=$HOST_SDK_AAR" \
+        :app:testDebugUnitTest :app:assembleDebug --console=plain
   artifacts:
     when: always
     expire_in: 7 days
@@ -94,9 +108,20 @@ unit_tests:
     - keytool -list -keystore app/weartak.keystore -storepass "$RELEASE_STORE_PASSWORD" -alias "$RELEASE_KEY_ALIAS" >/dev/null
     - echo "Production signing credentials verified."
   script:
-    - ./gradlew --no-daemon clean :app:assembleRelease
     - |
       set -eu
+      GRADLE_ROOT="$(sh ci/prepare_gradle.sh)"
+      trap 'rm -rf "$GRADLE_ROOT"' EXIT
+      export GRADLE_USER_HOME="$GRADLE_ROOT/gradle-home"
+      SDK_AAR="$(sh ci/prepare_pinned_plugin_sdk.sh)"
+      HOST_SDK_AAR="$(dirname "$SDK_AAR")/verified-weartak-plugin-host-services-sdk-release.aar"
+      unset CI_JOB_TOKEN
+      trap 'rm -f "$SDK_AAR" "$HOST_SDK_AAR"; rm -rf "$GRADLE_ROOT"' EXIT
+      "$GRADLE_USER_HOME/wrapper/dists/gradle-8.14.5-bin/690y85m0j9nfaub7xoiayko8a/gradle-8.14.5/bin/gradle" \
+        --no-daemon --max-workers=2 -Pkotlin.compiler.execution.strategy=in-process \
+        "-PweartakPluginSdkAar=$SDK_AAR" \
+        "-PweartakHostServicesSdkAar=$HOST_SDK_AAR" \
+        clean :app:assembleRelease --console=plain
       APK="$(find app/build/outputs/apk/release -type f -name '*.apk' | head -1)"
       [ -n "$APK" ] || { echo "ERROR: No release APK"; exit 1; }
       SDK_ROOT="${ANDROID_HOME:-${ANDROID_SDK_ROOT:-/opt/android-sdk-linux}}"

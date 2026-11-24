@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="crm_warning_title">Trạng thái CRM</string>
+    <string name="crm_warning_status_format">CRM %2$s: %1$d</string>
+    <string name="crm_warning_summary">%1$d / 100\n%2$s</string>
+    <string name="crm_warning_poor">THẤP</string>
+    <string name="crm_warning_moderate">TRUNG BÌNH</string>
+    <string name="crm_warning_details">Chi tiết CRM</string>
+    <string name="notification_crm">Suy luận CRM</string>
+    <string name="crm_reserve">Dự trữ CRM</string>
+</resources>

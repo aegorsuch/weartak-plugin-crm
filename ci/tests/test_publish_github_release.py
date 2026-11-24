@@ -82,7 +82,7 @@ class PublisherTests(unittest.TestCase):
             release_state(release, "12", "wrong-tag")
 
     def test_release_asset_names_preserve_plugin_case_and_pipeline(self):
-        for name in ("Sextant", "LACE", "TAK-CAD", "goTenna", "MOPP"):
+        for name in ("Sextant", "LACE", "TAK-CAD", "goTenna", "MOPP", "CRM"):
             for version in ("5.8.4", "5.8.4+abcdef12", "5.8.4-p42+abcdef12"):
                 with self.subTest(name=name, version=version):
                     self.assertEqual(
@@ -90,8 +90,8 @@ class PublisherTests(unittest.TestCase):
                         f"WearTAK-Plugin-{name}-5.8.4-p42.apk",
                     )
         self.assertEqual(
-            release_asset_name("Template", "0.1.0-app-template", 34),
-            "WearTAK-Plugin-Template-0.1.0-app-template-p34.apk",
+            release_asset_name("CRM", "1.0.0", 34),
+            "WearTAK-Plugin-CRM-1.0.0-p34.apk",
         )
         with self.assertRaises(PublishError):
             release_asset_name("Sextant", "5.8.4-p41+abcdef12", 42)

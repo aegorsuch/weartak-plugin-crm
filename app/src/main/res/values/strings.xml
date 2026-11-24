@@ -1,7 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">WearTAK Plugin App Template</string>
-    <string name="settings_title">WearTAK plugin app template</string>
-    <string name="template_main_hint">WearTAK plugin app template.\nService action:\n%1$s</string>
-    <string name="template_settings_hint">External settings hook for action:\n%1$s</string>
+    <string name="app_name">CRM</string>
+    <string name="crm_warning_title">CRM status</string>
+    <string name="crm_warning_status_format">CRM %2$s: %1$d</string>
+    <string name="crm_warning_summary">%1$d / 100\n%2$s</string>
+    <string name="crm_warning_poor">POOR</string>
+    <string name="crm_warning_moderate">MODERATE</string>
+    <string name="crm_warning_details">CRM details</string>
+    <string name="notification_crm">CRM inference</string>
+    <string name="crm_reserve">CRM Reserve</string>
 </resources>
