@@ -28,6 +28,8 @@ pending.
 
 ### Changelog
 
+- **5.8.4-p26** — Plugin now uses API V2, so Core gives it heart sensor (PPG) access. Fixes the
+  settings schema so Core sees all 4 CRM settings. Requires Core 5.8.4-p911 or later.
 - **5.8.4-p17** — First release. CRM moved out of WearTAK Core into this optional plugin.
   Same model, thresholds (33/66), screens and CSV logging as before. Requires Core with the
   new heart-rate (PPG) interface.
