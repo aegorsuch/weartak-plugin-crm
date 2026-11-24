@@ -11,6 +11,7 @@ import com.weartak.plugin.crm.data.CrmInferenceState
 import com.weartak.plugin.crm.data.CrmInferenceStatus
 import com.weartak.plugin.crm.data.CrmPluginSettings
 import com.weartak.plugin.crm.presentation.CrmReserveActivity
+import com.weartak.plugin.crm.presentation.CrmThresholdSettingsActivity
 import com.weartak.plugin.sdk.MainUiActionContract
 import com.weartak.plugin.sdk.aidl.IWearTakHostCallback
 import com.weartak.plugin.sdk.binder.PluginHostNotifier
@@ -41,6 +42,7 @@ object CrmPluginRuntime {
     private const val TAG = "WearTAK-CRM-Runtime"
     private const val SENSOR_KEY = "crm_status_v1"
     private const val ACTION_OPEN_CRM = "crm.open"
+    private const val ACTION_OPEN_THRESHOLDS = "crm.thresholds"
 
     private val lock = Any()
     private val eventExecutor = ThreadPoolExecutor(
@@ -89,6 +91,15 @@ object CrmPluginRuntime {
                     cardId = "crm-open",
                     title = "Open CRM",
                     content = MainUiActionContract.createContent(ACTION_OPEN_CRM, "Open CRM"),
+                ),
+                MainUiCardParcel(
+                    cardType = MainUiCardTypes.ACTION,
+                    cardId = "crm-thresholds",
+                    title = "CRM Thresholds",
+                    content = MainUiActionContract.createContent(
+                        ACTION_OPEN_THRESHOLDS,
+                        "Edit thresholds",
+                    ),
                 ),
             ),
         )
@@ -256,11 +267,15 @@ object CrmPluginRuntime {
     }
 
     fun invokeMainUiAction(actionId: String?): Boolean {
-        if (actionId != ACTION_OPEN_CRM) return false
+        val activityClass = when (actionId) {
+            ACTION_OPEN_CRM -> CrmReserveActivity::class.java
+            ACTION_OPEN_THRESHOLDS -> CrmThresholdSettingsActivity::class.java
+            else -> return false
+        }
         val context = appContextOrThrow()
         return try {
             context.startActivity(
-                Intent(context, CrmReserveActivity::class.java)
+                Intent(context, activityClass)
                     .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK),
             )
             true
