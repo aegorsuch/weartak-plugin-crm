@@ -20,6 +20,7 @@ interface PpgSource {
     }
 
     fun subscribe(listener: Listener): Int
+    fun canRetrySubscribe(): Boolean = false
     fun unsubscribe()
     fun close()
 }
@@ -155,6 +156,10 @@ class CrmPpgHostSource(
             }
         }
         return result
+    }
+
+    override fun canRetrySubscribe(): Boolean = synchronized(lock) {
+        !closed && !failed && binder.isBinderAlive && activeSubscriptionId == null
     }
 
     override fun unsubscribe() {

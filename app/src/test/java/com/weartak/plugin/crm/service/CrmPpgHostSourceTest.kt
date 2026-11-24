@@ -8,6 +8,7 @@ import com.weartak.plugin.sdk.ppg.v1.PpgStateV1
 import java.util.concurrent.CountDownLatch
 import java.util.concurrent.TimeUnit
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -46,6 +47,27 @@ class CrmPpgHostSourceTest {
         assertEquals("sensor_error", failureReason)
         assertTrue(host.unsubscribe.await(1, TimeUnit.SECONDS))
         assertEquals(1, host.unsubscribeCount)
+        assertFalse(source.canRetrySubscribe())
+        source.close()
+    }
+
+    @Test
+    fun unavailableSubscribeCanBeRetriedWithoutRecreatingHostSource() {
+        val host = RecordingPpgHost().apply {
+            subscribeResult = PpgContractV1.UNAVAILABLE
+        }
+        val source = CrmPpgHostSource(host)
+        val listener = recordingListener()
+
+        assertEquals(PpgContractV1.UNAVAILABLE, source.subscribe(listener))
+        assertTrue(source.canRetrySubscribe())
+
+        host.subscribeResult = PpgContractV1.OK
+        assertEquals(PpgContractV1.OK, source.subscribe(listener))
+        assertFalse(source.canRetrySubscribe())
+        assertEquals(2, host.subscribeCount)
+
+        source.unsubscribe()
         source.close()
     }
 
@@ -107,12 +129,16 @@ class CrmPpgHostSourceTest {
             private set
         var unsubscribeCount = 0
             private set
+        var subscribeCount = 0
+            private set
+        var subscribeResult = PpgContractV1.OK
         val unsubscribe = CountDownLatch(1)
 
         override fun subscribe(subscriptionId: String, callback: IPpgCallbackV1): Int {
+            subscribeCount += 1
             this.subscriptionId = subscriptionId
             this.callback = callback
-            return PpgContractV1.OK
+            return subscribeResult
         }
 
         override fun unsubscribe(subscriptionId: String): Int {

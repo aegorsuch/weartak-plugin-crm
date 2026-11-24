@@ -417,10 +417,13 @@ class CrmInferenceService : Service() {
         coordinator.reset(reason)
         csvLogger.stopSession(reason)
         repository.updateSamplingState(
-            if (reason == "host_disconnected" || reason.startsWith("subscribe_rejected_")) {
-                CrmDataRepository.CrmSamplingState.UNAVAILABLE
-            } else {
-                CrmDataRepository.CrmSamplingState.ERROR
+            when {
+                reason == "subscribe_rejected_${PpgContractV1.UNAVAILABLE}" &&
+                    source?.canRetrySubscribe() == true ->
+                    CrmDataRepository.CrmSamplingState.RETRYABLE_UNAVAILABLE
+                reason == "host_disconnected" || reason.startsWith("subscribe_rejected_") ->
+                    CrmDataRepository.CrmSamplingState.UNAVAILABLE
+                else -> CrmDataRepository.CrmSamplingState.ERROR
             },
         )
         repository.updateDeviceWorn(false)

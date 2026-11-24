@@ -145,6 +145,7 @@ fun CrmReserveScreen(
         CrmSamplingState.STOPPING -> "Stopping..."
         CrmSamplingState.NOT_WORN -> "Not Worn"
         CrmSamplingState.UNAVAILABLE -> "PPG Unavailable"
+        CrmSamplingState.RETRYABLE_UNAVAILABLE -> "Retry"
         CrmSamplingState.ERROR -> "Retry Session"
         CrmSamplingState.IDLE -> "Start"
     }
@@ -170,6 +171,7 @@ fun CrmReserveScreen(
     val samplingButtonColor = when (samplingState) {
         CrmSamplingState.IDLE,
         CrmSamplingState.NOT_WORN,
+        CrmSamplingState.RETRYABLE_UNAVAILABLE,
         CrmSamplingState.ERROR -> Color(0xFF146C2E)
 
         CrmSamplingState.STARTING,
@@ -367,6 +369,9 @@ private fun crmStatusText(
         CrmSamplingState.UNAVAILABLE ->
             "PPG sensor unavailable"
 
+        CrmSamplingState.RETRYABLE_UNAVAILABLE ->
+            "PPG unavailable. Tap Retry to try again."
+
         CrmSamplingState.ERROR ->
             "CRM measurement error"
 
@@ -462,6 +467,9 @@ private fun CrmPpgWaveformContent(
 
                     CrmSamplingState.UNAVAILABLE ->
                         "PPG sensor unavailable"
+
+                    CrmSamplingState.RETRYABLE_UNAVAILABLE ->
+                        "PPG unavailable. Tap Retry to try again."
 
                     CrmSamplingState.ERROR ->
                         "PPG measurement error"

@@ -55,6 +55,7 @@ class CrmDataRepository {
         STOPPING,
         NOT_WORN,
         UNAVAILABLE,
+        RETRYABLE_UNAVAILABLE,
         ERROR,
     }
 }
