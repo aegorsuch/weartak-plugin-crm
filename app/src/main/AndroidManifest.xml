@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_DATA_SYNC" />
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+
     <permission
         android:name="com.weartak.plugin.permission.BIND_PLUGIN"
         android:protectionLevel="signature" />
@@ -17,18 +21,19 @@
     </queries>
 
     <application
+        android:name=".CrmApplication"
         android:allowBackup="true"
         android:icon="@android:drawable/sym_def_app_icon"
         android:label="@string/app_name"
         android:supportsRtl="true"
-        android:theme="@style/Theme.WearTakPluginTemplate">
+        android:theme="@style/Theme.Crm">
 
         <meta-data
             android:name="com.google.android.wearable.standalone"
             android:value="true" />
 
         <activity
-            android:name="com.weartak.plugin.appteamplate.MainActivity"
+            android:name="com.weartak.plugin.crm.presentation.CrmReserveActivity"
             android:exported="true"
             android:label="@string/app_name">
             <intent-filter>
@@ -37,8 +42,13 @@
             </intent-filter>
         </activity>
 
+        <activity
+            android:name="com.weartak.plugin.crm.presentation.CrmThresholdSettingsActivity"
+            android:exported="false"
+            android:label="@string/app_name" />
+
         <service
-            android:name="com.weartak.plugin.template.service.WearTakPluginTemplateService"
+            android:name="com.weartak.plugin.crm.service.WearTakPluginCrmService"
             android:exported="true"
             android:permission="com.weartak.plugin.permission.BIND_PLUGIN">
             <intent-filter>
@@ -46,5 +56,10 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </service>
+
+        <service
+            android:name="com.weartak.plugin.crm.service.CrmInferenceService"
+            android:exported="false"
+            android:foregroundServiceType="dataSync" />
     </application>
 </manifest>

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="crm_warning_title">CRM状态</string>
+    <string name="crm_warning_status_format">CRM %2$s: %1$d</string>
+    <string name="crm_warning_summary">%1$d / 100\n%2$s</string>
+    <string name="crm_warning_poor">低</string>
+    <string name="crm_warning_moderate">中等</string>
+    <string name="crm_warning_details">CRM详情</string>
+    <string name="notification_crm">CRM 推理</string>
+    <string name="crm_reserve">CRM 储备</string>
+</resources>
