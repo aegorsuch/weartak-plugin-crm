@@ -21,9 +21,16 @@ falls back to local sensor access.
 
 ## Status
 
-CRM sources, UI, model, settings, and host bridge are being extracted from Core. The combined
+CRM sources, UI, model, settings, and host bridge have been extracted from Core. The combined
 SDK AAR is pinned to a verified TAK.gov Linux CI hash. Local Windows builds remain disabled
-because no verified Windows artifact or runner is available.
+because no verified Windows artifact or runner is available. Device validation on a watch is
+pending.
+
+### Changelog
+
+- **5.8.4-p17** — First release. CRM moved out of WearTAK Core into this optional plugin.
+  Same model, thresholds (33/66), screens and CSV logging as before. Requires Core with the
+  new heart-rate (PPG) interface.
 
 ## Point of Contacts
 
