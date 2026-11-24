@@ -26,6 +26,7 @@ import com.weartak.plugin.sdk.model.SettingsSchemaParcel
 import com.weartak.plugin.sdk.validation.ContractValidationResult
 import com.weartak.plugin.sdk.validation.PluginMetadataValidator
 import com.weartak.plugin.sdk.v2.aidl.IWearTakPluginHostControlV2
+import com.weartak.plugin.sdk.v3.aidl.IWearTakPluginHostControlV3
 
 class CrmPluginBinder(
     private val lifecycle: PluginLifecycleMachine,
@@ -80,6 +81,13 @@ class CrmPluginBinder(
             CrmPluginRuntime.updateLifecycle(lifecycle.snapshot())
         }
     }
+
+    override fun initializePluginV3(
+        init: PluginInitParcel?,
+        pluginControl: IWearTakPluginControl?,
+        pluginControlV2: IWearTakPluginHostControlV2?,
+        pluginControlV3: IWearTakPluginHostControlV3?,
+    ) = initializePluginV2(init, pluginControl, pluginControlV2)
 
     override fun startPlugin() {
         log("startPlugin")
