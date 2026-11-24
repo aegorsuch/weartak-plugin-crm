@@ -178,12 +178,21 @@ class CrmInferenceService : Service() {
 
             val consumer = serviceScope.launch {
                 for (event in events) {
-                    if (!isCurrentSession(generation)) break
+                    if (!isCurrentSession(generation) || queueOverflow.get()) break
                     when (event) {
-                        is PpgEvent.State -> handlePpgState(event.value)
+                        is PpgEvent.State -> {
+                            if (!handlePpgState(event.value)) {
+                                serviceScope.launch {
+                                    failSession(generation, event.value.reason ?: "ppg_host_error")
+                                }
+                                break
+                            }
+                        }
                         is PpgEvent.Samples -> handlePpgBatch(event.value)
-                        is PpgEvent.Failure ->
+                        is PpgEvent.Failure -> {
                             serviceScope.launch { failSession(generation, event.reason) }
+                            break
+                        }
                     }
                 }
             }
@@ -263,7 +272,8 @@ class CrmInferenceService : Service() {
         }
     }
 
-    private suspend fun handlePpgState(state: PpgStateV1) {
+    private suspend fun handlePpgState(state: PpgStateV1): Boolean {
+        var terminal = false
         when {
             state.worn == PpgContractV1.NOT_WORN || state.state == PpgContractV1.STATE_NOT_WORN -> {
                 repository.updateDeviceWorn(false)
@@ -317,12 +327,14 @@ class CrmInferenceService : Service() {
                                 rejectionReason = state.reason ?: "ppg_host_error",
                             ),
                         )
+                        terminal = true
                     }
                     else -> Unit
                 }
             }
         }
         CrmPluginRuntime.publishCurrentStatus()
+        return !terminal
     }
 
     private suspend fun handlePpgBatch(batch: PpgBatchV1) {
@@ -411,6 +423,7 @@ class CrmInferenceService : Service() {
                 CrmDataRepository.CrmSamplingState.ERROR
             },
         )
+        repository.updateDeviceWorn(false)
         repository.tryPublish(
             CrmInferenceState(
                 status = CrmInferenceStatus.ERROR,

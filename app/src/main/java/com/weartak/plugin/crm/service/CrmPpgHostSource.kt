@@ -72,6 +72,10 @@ class CrmPpgHostSource(
                 fail("invalid_state")
                 return
             }
+            if (state.state == PpgContractV1.ERROR) {
+                fail(state.reason ?: "ppg_host_error")
+                return
+            }
             try {
                 target.onState(state)
             } catch (e: RuntimeException) {

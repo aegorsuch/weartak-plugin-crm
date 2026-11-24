@@ -63,6 +63,8 @@ The plugin negotiates `com.weartak.plugin.sdk.ppg.v1` using `PluginInitParcel.ho
 The host owns the tracker and streams ordered `PpgBatchV1` data. The plugin checks subscription
 identity, batch sequence, state values, bounded batch size, and host death. It processes callbacks
 through a bounded serial queue and unsubscribes on stop, disable, detach, or failure.
+`STATE_NOT_WORN` and `STATE_UNAVAILABLE` remain subscribed for recovery; `ERROR`, callback
+validation failures, and delivery-queue overflow terminate the session and unsubscribe.
 
 CRM warning events use `IWearTakHostCallback.onSensorEvent` with `sensorKey=crm_status_v1`,
 monotonic per-connection sequence, and Bundle values:
