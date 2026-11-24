@@ -1,5 +1,6 @@
 import java.security.MessageDigest
 import java.util.zip.ZipFile
+import com.weartak.version.WearVersion
 
 plugins {
     id("com.android.application") version "8.7.2"
@@ -12,6 +13,12 @@ if (System.getProperty("os.name").startsWith("Windows", ignoreCase = true)) {
         "A verified Windows combined WearTAK SDK AAR is unavailable; use TAK.gov Linux CI.",
     )
 }
+
+val wearVersion = WearVersion.resolve(
+    rootDir.toPath(),
+    System.getenv(),
+    System.getenv("WEARTAK_SIGNING_PROPERTIES") != null || rootProject.file("signing.properties").isFile,
+)
 
 val sdkPath = providers.gradleProperty("weartakPluginSdkAar").orNull
     ?: throw GradleException("Set -PweartakPluginSdkAar to the verified combined WearTAK SDK AAR.")
@@ -84,8 +91,8 @@ android {
         applicationId = "com.weartak.plugin.crm"
         minSdk = 30
         targetSdk = 34
-        versionCode = 1
-        versionName = "1.0.0"
+        versionCode = wearVersion.code
+        versionName = wearVersion.name
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 

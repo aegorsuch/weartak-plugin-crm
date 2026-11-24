@@ -99,10 +99,12 @@ verified Windows hash exists; both Gradle configuration and SDK preparation fail
 Windows with guidance to use TAK.gov Linux CI. CI preparation follows the pinned Core builder
 and verifies the separate host-services SDK contract before Gradle consumes either AAR.
 
-Protected default-branch CI signs the release APK with WearTAK production credentials, verifies
-the signer, and publishes the versioned CRM APK to the configured rolling release mirror:
-`WearTAK-Plugin-CRM-<version>-p<pipeline>.apk`. Signing credentials and GitHub release tokens
-must remain masked/protected CI variables; never commit them.
+CI derives the version from authenticated WearTAK Core main and the pipeline IID. For example,
+Core version `5.8.4` and pipeline IID `79` produce version code `5840079` and version name
+`5.8.4-p79+<commit-sha8>`. Default-branch and tagged release CI sign the APK with WearTAK
+production credentials and verify the signer. The release artifact is named
+`WearTAK-Plugin-CRM-<version>-p<pipeline-IID>.apk`; GitHub mirror releases are published
+manually. Signing credentials must remain masked/protected CI variables; never commit them.
 
 ## License
 
