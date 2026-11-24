@@ -65,7 +65,9 @@ The host owns the tracker and streams ordered `PpgBatchV1` data. The plugin chec
 identity, batch sequence, state values, bounded batch size, and host death. It processes callbacks
 through a bounded serial queue and unsubscribes on stop, disable, detach, or failure.
 `STATE_NOT_WORN` and `STATE_UNAVAILABLE` remain subscribed for recovery; `ERROR`, callback
-validation failures, and delivery-queue overflow terminate the session and unsubscribe.
+validation failures, and delivery-queue overflow terminate the session and unsubscribe. A
+subscribe rejection with `UNAVAILABLE` tears down that attempt but leaves a healthy host Binder
+available for the wearer to retry after host policy or permissions recover.
 
 CRM warning events use `IWearTakHostCallback.onSensorEvent` with `sensorKey=crm_status_v1`,
 monotonic per-connection sequence, and Bundle values:
