@@ -29,7 +29,7 @@ public final class WearVersion {
             if (ci || signing || forwarded) {
                 throw new IllegalArgumentException("Authenticated canonical WearTAK version is required.");
             }
-            return new WearVersion("5.8.4-dev", 5840000);
+            return new WearVersion("5.9.0-dev", 5900000);
         }
         Properties properties = load(canonical);
         String version = required(properties, "versionName");
