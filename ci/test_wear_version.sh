@@ -29,7 +29,7 @@ case "$1" in
     rev-parse) printf '%s\n' '1111111111111111111111111111111111111111' ;;
     show)
         [ "$2" = "1111111111111111111111111111111111111111:wear-version.properties" ]
-        printf 'versionName=5.8.4\nbaseVersionCode=584\n'
+        printf 'versionName=5.9.0\nbaseVersionCode=590\n'
         ;;
     *) exit 1 ;;
 esac
@@ -41,7 +41,7 @@ chmod 700 "$WORK_ROOT/bin/git"
     export CI_COMMIT_SHA=abcdef0122222222222222222222222222222222
     export WEARTAK_VERSION_SOURCE_PROJECT_ID=6739
     export WEARTAK_VERSION_SOURCE_SHA=1111111111111111111111111111111111111111
-    export WEARTAK_VERSION_NAME=5.8.4 WEARTAK_BASE_VERSION_CODE=584
+    export WEARTAK_VERSION_NAME=5.9.0 WEARTAK_BASE_VERSION_CODE=590
     sh "$ROOT/ci/prepare_wear_version.sh"
     [ -s "$FIXTURE/.gradle/wear-version.properties" ]
     export FAIL_FETCH=true
@@ -61,13 +61,13 @@ printf '%s\n' 'Canonical source boundary tests passed'
 
 mkdir -p "$FIXTURE/app/build/outputs/apk/release"
 DIR="$FIXTURE/app/build/outputs/apk/release"
-printf 'versionName=5.8.4\nbaseVersionCode=584\n' > "$FIXTURE/.gradle/wear-version.properties"
+printf 'versionName=5.9.0\nbaseVersionCode=590\n' > "$FIXTURE/.gradle/wear-version.properties"
 printf '%s\n' 'signed APK fixture' > "$DIR/app-release.apk"
 cat > "$DIR/output-metadata.json" <<'EOF'
 {
   "elements": [{
-    "versionCode": 5840079,
-    "versionName": "5.8.4-p79+abcdef01",
+    "versionCode": 5900079,
+    "versionName": "5.9.0-p79+abcdef01",
     "outputFile": "app-release.apk"
   }]
 }
@@ -82,7 +82,7 @@ EOF
     [ -f "$DIR/app-release.apk" ]
     sh "$ROOT/ci/name_release_apk.sh"
 )
-NAME="WearTAK-Plugin-CRM-5.8.4-p79.apk"
+NAME="WearTAK-Plugin-CRM-5.9.0-p79.apk"
 [ -f "$DIR/$NAME" ]
 [ ! -e "$DIR/app-release.apk" ]
 grep -F "\"outputFile\": \"$NAME\"" "$DIR/output-metadata.json" >/dev/null

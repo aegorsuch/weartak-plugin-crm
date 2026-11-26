@@ -43,6 +43,12 @@ public final class WearVersionTest {
         equal(5840079, WearVersion.calculate("5.8.4", "584", "79", PLUGIN_SHA).code);
         equal(5840001, WearVersion.calculate("5.8.4", "584", "1", PLUGIN_SHA).code);
         equal(5849999, WearVersion.calculate("5.8.4", "584", "9999", PLUGIN_SHA).code);
+        WearVersion nextRelease = WearVersion.calculate("5.9.0", "590", "1", PLUGIN_SHA);
+        equal("5.9.0-p1+abcdef01", nextRelease.name);
+        equal(5900001, nextRelease.code);
+        if (nextRelease.code <= WearVersion.calculate("5.8.4", "584", "9999", PLUGIN_SHA).code) {
+            throw new AssertionError("5.9.0 version code must exceed all 5.8.4 pipeline codes");
+        }
         equal(2099999999, WearVersion.calculate("9.0.0", "209999", "9999", PLUGIN_SHA).code);
         for (String iid : new String[] {"0", "-1", "10000", "01", "x", "9999999999999999999"}) {
             rejects(() -> WearVersion.calculate("5.8.4", "584", iid, PLUGIN_SHA));
@@ -56,22 +62,24 @@ public final class WearVersionTest {
         Path directory = root.resolve(".gradle");
         Path canonical = directory.resolve("wear-version.properties");
         try {
-            equal("5.8.4-dev", WearVersion.resolve(root, Map.of(), false).name);
+            WearVersion local = WearVersion.resolve(root, Map.of(), false);
+            equal("5.9.0-dev", local.name);
+            equal(5900000, local.code);
             rejects(() -> WearVersion.resolve(root, Map.of(), true));
             rejects(() -> WearVersion.resolve(root, pipeline(), false));
             Map<String, String> forwarded = pipeline();
             forwarded.put("CI_PIPELINE_SOURCE", "pipeline");
             forwarded.put("WEARTAK_VERSION_SOURCE_PROJECT_ID", "6739");
             forwarded.put("WEARTAK_VERSION_SOURCE_SHA", CORE_SHA);
-            forwarded.put("WEARTAK_VERSION_NAME", "5.8.4");
-            forwarded.put("WEARTAK_BASE_VERSION_CODE", "584");
+            forwarded.put("WEARTAK_VERSION_NAME", "5.9.0");
+            forwarded.put("WEARTAK_BASE_VERSION_CODE", "590");
             rejects(() -> WearVersion.resolve(root, forwarded, true));
             Files.createDirectory(directory);
-            String contents = "versionName=5.8.4\nbaseVersionCode=584\n"
+            String contents = "versionName=5.9.0\nbaseVersionCode=590\n"
                     + "sourceProjectId=6739\nsourceSha=" + CORE_SHA + "\n";
             Files.writeString(canonical, contents);
-            equal("5.8.4-p42+abcdef01", WearVersion.resolve(root, pipeline(), true).name);
-            equal(5840042, WearVersion.resolve(root, forwarded, true).code);
+            equal("5.9.0-p42+abcdef01", WearVersion.resolve(root, pipeline(), true).name);
+            equal(5900042, WearVersion.resolve(root, forwarded, true).code);
             for (String key : new String[] {"WEARTAK_VERSION_SOURCE_PROJECT_ID",
                     "WEARTAK_VERSION_SOURCE_SHA", "WEARTAK_VERSION_NAME", "WEARTAK_BASE_VERSION_CODE"}) {
                 Map<String, String> wrong = new HashMap<>(forwarded);
